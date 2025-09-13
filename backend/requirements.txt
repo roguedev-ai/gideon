@@ -19,3 +19,10 @@ mcp==0.1.0
 mcp-client==0.1.0
 weaviate-client==4.4.4
 pinecone-client==2.2.4
+cryptography==41.0.4
+python-multipart==0.0.6
+slowapi==0.1.9
+email-validator==2.1.0
+werkzeug==2.3.7
+python-decouple==3.8
+structlog==23.2.0

@@ -17,7 +17,14 @@ router = APIRouter()
 
 @router.post("/register", response_model=schemas.User)
 async def register_user(user: schemas.UserCreate, db: Session = Depends(deps.get_db)):
-    """Register a new user"""
+    """Register a new user with security validation"""
+    from ..security import validate_password_strength, SecurityHeaders
+
+    # Validate password strength
+    is_strong, password_msg = validate_password_strength(user.password)
+    if not is_strong:
+        raise HTTPException(status_code=400, detail=password_msg)
+
     # Check if user already exists
     db_user = crud.get_user_by_username(db, username=user.username)
     if db_user:
@@ -27,7 +34,7 @@ async def register_user(user: schemas.UserCreate, db: Session = Depends(deps.get
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    # Create new user
+    # Create new user with secure password
     hashed_password = utils.get_password_hash(user.password)
     db_user = crud.create_user(db=db, user=user, hashed_password=hashed_password)
     return db_user

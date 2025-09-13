@@ -13,6 +13,12 @@ from ..database import SessionLocal
 from .. import deps, schemas
 from ..chat import crud
 from ..vector import vector_manager
+from ..security import decrypt_api_key, sanitize_input, SecurityConfig
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+# Rate limiting for chat endpoints
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter()
 
@@ -38,15 +44,22 @@ async def chat_completion(
     current_user: schemas.User = Depends(deps.get_current_active_user),
     db: Session = Depends(deps.get_db)
 ):
-    """Send a chat message and get AI response"""
+    """Send a chat message and get AI response with security controls"""
     try:
-        # Get user's API key
+        # Input sanitization
+        request.message = sanitize_input(request.message, 10000)  # Allow longer messages but limit
+
+        # Get and decrypt user's API key
         api_key_obj = crud.get_user_api_key(db, user_id=current_user.id, api_key_id=request.api_key_id)
         if not api_key_obj:
             raise HTTPException(status_code=404, detail="API key not found")
 
-        # Decrypt API key (simplified - in production use proper encryption)
-        api_key = api_key_obj.encrypted_key  # TODO: Decrypt properly
+        # Decrypt API key using Fernet
+        try:
+            api_key = decrypt_api_key(api_key_obj.encrypted_key)
+        except Exception as e:
+            print(f"⚠️  SECURITY: Failed to decrypt API key for user {current_user.id}: {e}")
+            raise HTTPException(status_code=500, detail="Failed to access API key")
 
         # Initialize OpenAI client
         client = get_openai_client(api_key)
@@ -130,14 +143,22 @@ async def chat_completion_stream(
     current_user: schemas.User = Depends(deps.get_current_active_user),
     db: Session = Depends(deps.get_db)
 ):
-    """Streaming chat completion endpoint"""
+    """Streaming chat completion endpoint with security"""
     try:
-        # Get API key (same as above)
+        # Input sanitization
+        request.message = sanitize_input(request.message, 10000)
+
+        # Get and decrypt API key
         api_key_obj = crud.get_user_api_key(db, user_id=current_user.id, api_key_id=request.api_key_id)
         if not api_key_obj:
             raise HTTPException(status_code=404, detail="API key not found")
 
-        api_key = api_key_obj.encrypted_key  # TODO: Decrypt
+        # Decrypt API key using Fernet
+        try:
+            api_key = decrypt_api_key(api_key_obj.encrypted_key)
+        except Exception as e:
+            print(f"⚠️  SECURITY: Failed to decrypt API key for user {current_user.id}: {e}")
+            raise HTTPException(status_code=500, detail="Failed to access API key")+++++++ REPLACE
         client = get_openai_client(api_key)
 
         # Get conversation

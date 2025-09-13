@@ -9,15 +9,15 @@ from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 from .database import SessionLocal
 from . import schemas
-import os
+from .security import SecurityConfig
 
 # OAuth2 scheme for token authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
-# JWT configuration
-SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+# JWT configuration - now using SecurityConfig
+SECRET_KEY = SecurityConfig.SECRET_KEY
+ALGORITHM = SecurityConfig.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = SecurityConfig.ACCESS_TOKEN_EXPIRE_MINUTES
 
 def get_db() -> Generator[Session, None, None]:
     """Database session dependency"""

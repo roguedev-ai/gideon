@@ -8,6 +8,11 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+import structlog
 import chromadb
 import weaviate
 from pinecone import Pinecone
@@ -15,6 +20,26 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+
+# Configure structured logging
+structlog.configure(
+    processors=[
+        structlog.stdlib.filter_by_level,
+        structlog.stdlib.add_logger_name,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.UnicodeDecoder(),
+        structlog.processors.JSONRenderer()
+    ],
+    context_class=dict,
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    wrapper_class=structlog.stdlib.BoundLogger,
+    cache_logger_on_first_use=True,
+)
+
+# Import our security config
+from .security import SecurityConfig, SecurityHeaders
 
 # Import routers
 from .auth import router as auth_router
@@ -67,21 +92,36 @@ async def lifespan(app: FastAPI):
     # Cleanup on shutdown
     print("Shutting down AI Chat MCP Studio...")
 
+# Rate limiting
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
+
 # Create FastAPI app
 app = FastAPI(
     title="AI Chat MCP Studio API",
-    description="Backend API for AI chat with MCP server integration and vector storage",
+    description="Secure Backend API for AI chat with MCP server integration and vector storage",
     version="1.0.0",
     lifespan=lifespan
 )
 
-# CORS middleware
+# Enhanced CORS middleware with security config
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],  # React dev server ports
+    allow_origins=SecurityConfig.ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=[
+        "Authorization",
+        "Content-Type",
+        "X-Requested-With",
+        "Accept",
+        "Origin",
+        "Access-Control-Request-Method",
+        "Access-Control-Request-Headers"
+    ],
+    max_age=86400,  # 24 hours
 )
 
 # Global exception handler

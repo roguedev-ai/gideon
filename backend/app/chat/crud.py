@@ -99,9 +99,19 @@ def create_user_api_key(
     name: str,
     api_key: str
 ) -> UserAPIKey:
-    """Create a new API key for a user"""
-    # Encrypt API key (simplified - in production use proper encryption)
-    encrypted_key = api_key  # TODO: Implement proper encryption
+    """Create a new API key for a user with proper encryption"""
+    from ..security import encrypt_api_key, sanitize_input
+
+    # Sanitize inputs to prevent injection
+    provider = sanitize_input(provider, 50)
+    name = sanitize_input(name, 100)
+
+    # Encrypt API key using Fernet
+    try:
+        encrypted_key = encrypt_api_key(api_key)
+    except Exception as e:
+        print(f"⚠️  SECURITY: Failed to encrypt API key: {e}")
+        raise ValueError("Failed to encrypt API key")
 
     db_api_key = UserAPIKey(
         user_id=user_id,
