@@ -39,6 +39,26 @@ services:
       - CHROMA_PORT=8000
       - CHROMA_HOST=0.0.0.0
 
+  # Frontend React Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../frontend.Dockerfile
+    container_name: gideon-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    networks:
+      - gideon-network
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_ENVIRONMENT=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # Backend API Server
   backend:
     build:
