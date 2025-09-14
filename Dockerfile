@@ -19,7 +19,9 @@ WORKDIR /app
 
 # Install Python dependencies (before creating user to ensure proper permissions)
 COPY backend/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Create pip cache directory and install with limited cache to save space
+RUN pip install --cache-dir /tmp/pip-cache --no-cache-dir -r requirements.txt && \
+    rm -rf /tmp/pip-cache
 
 # Set environment variables including proper PATH for Python bins
 ENV PYTHONPATH=/app
