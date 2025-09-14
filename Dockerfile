@@ -20,6 +20,9 @@ WORKDIR /app
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash app \
     && chown -R app:app /app
+
+# Add user local bin to PATH for pip --user installs
+ENV PATH="/home/app/.local/bin:$PATH"
 USER app
 
 # Install Python dependencies
