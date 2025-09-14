@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Gideon - AI Chat MCP Studio. A comprehensive AI chat platform with MCP server integration, multi-provider support, and professional UI."
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- Preconnect to optimize loading -->
+    <link rel="preconnect" href="%REACT_APP_API_URL%" crossorigin />
+
+    <!-- Font preload for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Primary Meta Tags -->
+    <title>Gideon - AI Chat MCP Studio</title>
+    <meta name="title" content="Gideon - AI Chat MCP Studio">
+    <meta name="description" content="Self-hosted AI chat platform with MCP server integration. Support for OpenAI, Anthropic, and custom models with professional UI and comprehensive feature set.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gideon.ai/">
+    <meta property="og:title" content="Gideon - AI Chat MCP Studio">
+    <meta property="og:description" content="Self-hosted AI chat platform with MCP server integration. Support for OpenAI, Anthropic, and custom models with professional UI and comprehensive feature set.">
+    <meta property="og:image" content="%PUBLIC_URL%/logo512.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://gideon.ai/">
+    <meta property="twitter:title" content="Gideon - AI Chat MCP Studio">
+    <meta property="twitter:description" content="Self-hosted AI chat platform with MCP server integration. Support for OpenAI, Anthropic, and custom models with professional UI and comprehensive feature set.">
+    <meta property="twitter:image" content="%PUBLIC_URL%/logo512.png">
+
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Gideon AI">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Gideon AI">
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+
+    <!-- Theme and UI -->
+    <script>
+      // Apply initial theme to prevent flash
+      (function() {
+        const theme = localStorage.getItem('theme') ||
+                     (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root" class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+      <!-- Loading placeholder that will be replaced by React -->
+      <div class="min-h-screen flex items-center justify-center">
+        <div class="text-center">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">Loading Gideon...</h2>
+          <p class="text-gray-500 dark:text-gray-400 mt-2">Initializing AI Chat MCP Studio</p>
+        </div>
+      </div>
+    </div>
+    <!--
+      This HTML file is the entry point for the Gideon React application.
+
+      Gideon is a comprehensive AI chat platform featuring:
+      - Multi-provider AI support (OpenAI, Anthropic, custom)
+      - MCP server integration framework
+      - Professional user interface with themes
+      - Secure API key management
+      - Real-time conversation management
+      - Responsive mobile design
+      - Production-ready security features
+    -->
+  </body>
+</html>
