@@ -16,7 +16,6 @@ httpx==0.25.2
 aiofiles==23.2.1
 python-dotenv==1.0.0
 mcp>=0.9.1
-mcp-client>=0.9.1
 weaviate-client==4.4.4
 pinecone-client==2.2.4
 cryptography==41.0.4
