@@ -45,23 +45,63 @@ A **fully-functional, self-hosted AI chat platform** with MCP server integration
 ## Quick Start
 
 ### 🚀 **Docker Deployment (Recommended - 3 minutes)**
-The easiest way to get Gideon running:
 
+#### **Option 1: Automated Prerequisites Check (Recommended)**
 ```bash
 # Clone the repository
 git clone https://github.com/roguedev-ai/gideon.git
 cd gideon
 
-# Start all services (database, vector DB, API, frontend)
+# Run comprehensive prerequisites check
+./deploy-check.sh
+
+# If all checks pass, deploy immediately
 docker-compose up -d
 
 # Run health check
 python3 test-backend.py
+```
 
-# Access the application
-# Frontend: http://localhost:3000 (main web application)
-# API: http://localhost:8000/docs (developer documentation)
-# Health Check: http://localhost:8000/health
+#### **Option 2: Direct Deployment**
+```bash
+# Clone and deploy in one command
+git clone https://github.com/roguedev-ai/gideon.git && \
+cd gideon && \
+docker-compose up -d
+
+# Verify deployment
+python3 test-backend.py
+```
+
+### **Access Your Application**
+- 🏠 **Frontend**: http://localhost:3000 (main web application)
+- 🔧 **API**: http://localhost:8000/docs (developer documentation)
+- ❤️ **Health**: http://localhost:8000/health (status check)
+
+### 📋 **Prerequisites Script Features**
+The `deploy-check.sh` script automatically:
+- ✅ Checks OS compatibility (Linux/macOS/Windows)
+- ✅ Verifies system resources (RAM/Disk)
+- ✅ Validates Docker/Docker Compose installation
+- ✅ Tests Git availability
+- ✅ Validates project files integrity
+- ✅ Checks required ports availability
+- ✅ **Auto-installs missing dependencies** (when possible)
+- ✅ Provides deployment guidance
+
+**Usage Options:**
+```bash
+# Full check with auto-installation
+./deploy-check.sh
+
+# Verbose output mode
+./deploy-check.sh -v
+
+# Manual installation mode (no auto-install)
+./deploy-check.sh --no-auto-install
+
+# Help
+./deploy-check.sh -h
 ```
 
 ### 🐧 **Native Installation (Advanced)**
