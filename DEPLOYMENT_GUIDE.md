@@ -30,9 +30,12 @@ git clone https://github.com/roguedev-ai/gideon.git
 cd gideon
 
 # Deploy complete system (frontend + backend + database)
-docker-compose up -d
+sudo docker-compose up -d
 
-# Verify deployment
+# Check deployment status
+sudo docker-compose ps
+
+# Verify deployment with test suite
 python3 test-backend.py
 
 # Access your complete AI chat MCP studio
@@ -41,7 +44,75 @@ python3 test-backend.py
 # ❤️️ Health: http://your-server:8000/health
 ```
 
-**That's it! You now have a complete, user-ready AI chat application!**
+## 🛠️ **Troubleshooting Common Issues**
+
+### **Docker Permission Denied Error**
+If you see: `PermissionError: [Errno 13] Permission denied`
+```bash
+# Add your user to docker group
+sudo usermod -aG docker $USER
+# Logout and login again, or restart session
+```
+
+### **Docker Build Errors**
+If build fails due to network issues:
+```bash
+# Clear Docker cache and retry
+sudo docker system prune -a
+sudo docker-compose build --no-cache
+
+# Or use specific image pulls
+sudo docker pull postgres:15-alpine
+sudo docker pull chromadb/chroma:latest
+```
+
+### **Port Conflicts**
+If ports 3000, 8000, or 5432 are in use:
+```bash
+# Check what's using the ports
+sudo netstat -tulpn | grep :3000
+sudo netstat -tulpn | grep :8000
+sudo netstat -tulpn | grep :5432
+
+# Kill conflicting processes or change ports in docker-compose.yml
+sudo fuser -k 3000/tcp  # Kill process on port 3000
+```
+
+### **Database Connection Issues**
+```bash
+# Check if PostgreSQL container is running
+sudo docker-compose logs postgres
+
+# Connect to database container
+sudo docker-compose exec postgres psql -U gideon -d gideon_db
+
+# Reset database if needed
+sudo docker-compose down -v
+sudo docker-compose up -d --build
+```
+
+### **Firewall/Network Issues**
+```bash
+# Open required ports in firewall
+sudo ufw allow 22/tcp      # SSH
+sudo ufw allow 80/tcp      # HTTP
+sudo ufw allow 443/tcp     # HTTPS (if using SSL)
+sudo ufw allow 3000/tcp    # Frontend
+sudo ufw allow 8000/tcp    # Backend API
+sudo ufw allow 5432/tcp    # PostgreSQL (optional, for direct access)
+```
+
+### **SSL/TLS Setup**
+```bash
+# Using Let's Encrypt (recommended)
+sudo apt install certbot
+sudo certbot --nginx
+
+# Manual SSL certificates
+sudo mkdir -p nginx/ssl
+sudo cp your-cert.pem nginx/ssl/fullchain.pem
+sudo cp your-key.pem nginx/ssl/privkey.pem
+```
 
 That's it! You now have a self-hosted alternative to OpenWebUI with MCP capabilities.
 
