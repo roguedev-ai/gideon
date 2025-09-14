@@ -12,8 +12,8 @@ WORKDIR /app
 # Copy package files for dependency installation
 COPY package*.json ./
 
-# Install dependencies (including dev dependencies for build)
-RUN npm ci --silent
+# Install dependencies (with better error handling and debugging)
+RUN npm install --no-optional --legacy-peer-deps || npm install --force --legacy-peer-deps
 
 # Copy source code
 COPY . ./

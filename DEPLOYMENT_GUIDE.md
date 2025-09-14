@@ -114,6 +114,58 @@ sudo cp your-cert.pem nginx/ssl/fullchain.pem
 sudo cp your-key.pem nginx/ssl/privkey.pem
 ```
 
+## 🐠 **Alternative Quick Start (Skip Docker Build Issues)**
+
+### **Option 3: Backend-Only Deployment (Fastest)**
+If Docker build issues persist, run just the backend first:
+
+```bash
+# Navigate to gideon directory
+cd gideon
+
+# Run backend with Python directly (no Docker)
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+# In another terminal, test the backend
+curl http://localhost:8000/health
+curl http://localhost:8000/docs
+```
+
+### **Option 4: Manual Frontend Build**
+If Docker frontend issues continue:
+
+```bash
+# Navigate to frontend directory
+cd gideon/frontend
+
+# Install dependencies locally
+npm install --legacy-peer-deps
+
+# Build for production
+npm run build
+
+# Serve with nginx (production)
+# Or serve locally (development)
+npx serve -s build -p 3000
+```
+
+### **Option 5: Docker Debug Mode**
+For debugging Docker build issues:
+
+```bash
+# Build with verbose logging
+sudo docker-compose build --no-cache --progress=plain
+
+# Or build each service separately
+sudo docker build -t gideon-backend gideon/
+sudo docker build -t gideon-frontend gideon/frontend/
+
+# Run specific service
+sudo docker-compose up postgres chromadb backend
+```
+
 That's it! You now have a self-hosted alternative to OpenWebUI with MCP capabilities.
 
 ## 🔧 **Advanced Deployment Options**
