@@ -49,11 +49,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# Default command with multiple fallback strategies
-CMD ["sh", "-c", "\
-    echo '=== STARTING BACKEND ===' && \
-    echo 'PATH: '\$PATH && \
-    (which uvicorn && echo 'Found uvicorn with which' && uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1) || \
-    (/usr/local/bin/uvicorn --version && echo 'Using /usr/local/bin/uvicorn' && /usr/local/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1) || \
-    (pip install uvicorn && echo 'Reinstalling uvicorn...' && uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1) || \
-    echo 'ERROR: Cannot find uvicorn, failing gracefully'"]
+# Use Python module execution to bypass all PATH issues
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
