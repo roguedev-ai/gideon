@@ -49,5 +49,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# Use custom entrypoint script for comprehensive diagnostics and startup
-ENTRYPOINT ["/app/app/docker-entrypoint.sh"]
+# Use Python entrypoint script for ultimate PATH resolution
+ENTRYPOINT ["python", "/app/app/entrypoint.py"]
