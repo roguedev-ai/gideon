@@ -34,6 +34,14 @@ USER app
 COPY --chown=app:app backend/app ./app
 COPY --chown=app:app alembic.ini ./alembic.ini
 
+# Debug runtime environment and find uvicorn
+RUN echo "=== RUNTIME DEBUG ===" && \
+    echo "Current PATH: $PATH" && \
+    echo "Finding uvicorn..." && \
+    find /usr -name "uvicorn*" -type f 2>/dev/null && \
+    echo "Python packages location:" && \
+    ls -la /usr/local/bin/uv* 2>/dev/null || echo "No uvicorn in /usr/local/bin"
+
 # Expose port
 EXPOSE 8000
 
@@ -41,5 +49,11 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# Default command
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+# Default command with multiple fallback strategies
+CMD ["sh", "-c", "\
+    echo '=== STARTING BACKEND ===' && \
+    echo 'PATH: '\$PATH && \
+    (which uvicorn && echo 'Found uvicorn with which' && uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1) || \
+    (/usr/local/bin/uvicorn --version && echo 'Using /usr/local/bin/uvicorn' && /usr/local/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1) || \
+    (pip install uvicorn && echo 'Reinstalling uvicorn...' && uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1) || \
+    echo 'ERROR: Cannot find uvicorn, failing gracefully'"]
