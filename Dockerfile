@@ -21,6 +21,10 @@ WORKDIR /app
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Set environment variables including proper PATH for Python bins
+ENV PYTHONPATH=/app
+ENV PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+
 # Create non-root user and set proper ownership
 RUN useradd --create-home --shell /bin/bash app \
     && chown -R app:app /app
