@@ -17,17 +17,14 @@ RUN apt-get update && apt-get install -y \
 # Create app directory
 WORKDIR /app
 
-# Create non-root user
+# Install Python dependencies (before creating user to ensure proper permissions)
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Create non-root user and set proper ownership
 RUN useradd --create-home --shell /bin/bash app \
     && chown -R app:app /app
-
-# Add user local bin to PATH for pip --user installs
-ENV PATH="/home/app/.local/bin:$PATH"
 USER app
-
-# Install Python dependencies
-COPY --chown=app:app backend/requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
 
 # Copy application code
 COPY --chown=app:app backend/app ./app
