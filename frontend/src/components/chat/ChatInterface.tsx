@@ -5,20 +5,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import Modal from '../common/Modal';
 import APIKeyManager from '../settings/APIKeyManager';
 import AddAPIKeyForm from '../settings/AddAPIKeyForm';
-
-interface Conversation {
-  id: number;
-  title: string;
-  created_at: string;
-  message_count: number;
-}
-
-interface Message {
-  id: number;
-  content: string;
-  role: 'user' | 'assistant';
-  created_at: string;
-}
+import { Conversation, Message } from '../../types/api';
 
 interface ApiKey {
   id: number;
@@ -81,6 +68,7 @@ const ChatInterface: React.FC = () => {
     // Add user message immediately to UI
     const userMessage: Message = {
       id: Date.now(),
+      conversation_id: 0, // Temporary ID until conversation is created
       content: message,
       role: 'user',
       created_at: new Date().toISOString(),
@@ -101,15 +89,21 @@ const ChatInterface: React.FC = () => {
 
       const response = await import('../../services/api').then(m => m.apiService).then(api => api.sendChatMessage(chatRequest));
 
-      // Add AI response to messages
-      const aiMessage: Message = {
-        id: Date.now(),
-        content: response.message.content,
-        role: 'assistant',
-        created_at: new Date().toISOString(),
-      };
+      // Add AI response to messages (returned from API has all required fields)
+      const aiMessage: Message = response.message;
 
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages(prev => {
+        const updatedMessages = [...prev, aiMessage];
+        // Update the user message with the actual conversation_id once we have it
+        if (response.conversation_id) {
+          return updatedMessages.map(msg =>
+            msg.role === 'user' && msg.content === messageText
+              ? { ...msg, conversation_id: response.conversation_id }
+              : msg
+          );
+        }
+        return updatedMessages;
+      });
 
       // Update conversation ID if this was the first message
       if (response.conversation_id && !activeConversationId) {
@@ -126,6 +120,7 @@ const ChatInterface: React.FC = () => {
       // Add error message
       const errorMessage: Message = {
         id: Date.now(),
+        conversation_id: 0,
         content: `❌ Error: ${error instanceof Error ? error.message : 'Failed to send message. Please try again.'}`,
         role: 'assistant',
         created_at: new Date().toISOString(),
