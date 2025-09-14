@@ -44,7 +44,7 @@ const APIKeyManager: React.FC<APIKeyManagerProps> = ({
   };
 
   const handleDeleteApiKey = async (apiKeyId: number) => {
-    if (!confirm('Are you sure you want to delete this API key? This action cannot be undone.')) {
+    if (!window.confirm('Are you sure you want to delete this API key? This action cannot be undone.')) { // eslint-disable-line no-restricted-globals
       return;
     }
 

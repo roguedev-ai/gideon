@@ -172,7 +172,7 @@ const ChatInterface: React.FC = () => {
   };
 
   const deleteConversation = async (conversationId: number) => {
-    if (!confirm('Are you sure you want to delete this conversation? This action cannot be undone.')) {
+    if (!window.confirm('Are you sure you want to delete this conversation? This action cannot be undone.')) { // eslint-disable-line no-restricted-globals
       return;
     }
 
