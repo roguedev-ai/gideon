@@ -12,8 +12,12 @@ WORKDIR /app
 # Copy package files for dependency installation
 COPY package*.json ./
 
-# Install dependencies (with better error handling and debugging)
-RUN npm install --no-optional --legacy-peer-deps || npm install --force --legacy-peer-deps
+# Install dependencies with comprehensive fixes for version conflicts
+RUN npm cache clean --force && \
+    rm -rf node_modules package-lock.json && \
+    npm install --legacy-peer-deps --unsafe-perm=true --allow-root || \
+    (npm install --force --legacy-peer-deps --unsafe-perm=true --allow-root && \
+     npm rebuild ajv ajv-keywords)
 
 # Copy source code
 COPY . ./
