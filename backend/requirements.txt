@@ -23,3 +23,7 @@ email-validator==2.1.0
 werkzeug==2.3.7
 python-decouple==3.8
 structlog==23.2.0
+# Pin numpy to version compatible with chromadb 0.4.18
+numpy<2.0.0
+# Pin compatible versions of other dependencies that might pull in numpy 2.0
+scipy<1.12.0
