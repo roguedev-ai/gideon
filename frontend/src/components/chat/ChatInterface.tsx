@@ -35,9 +35,9 @@ const ChatInterface: React.FC = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
+  const [activeConversationId, setActiveConversationId] = useState<number | undefined>(undefined);
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
-  const [selectedApiKeyId, setSelectedApiKeyId] = useState<number | null>(null);
+  const [selectedApiKeyId, setSelectedApiKeyId] = useState<number | undefined>(undefined);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showAddAPIKeyForm, setShowAddAPIKeyForm] = useState(false);
 
@@ -138,7 +138,7 @@ const ChatInterface: React.FC = () => {
   };
 
   const handleNewConversation = () => {
-    setActiveConversationId(null);
+    setActiveConversationId(undefined);
     setMessages([]);
     setMessage('');
   };
@@ -182,7 +182,7 @@ const ChatInterface: React.FC = () => {
 
       // If we deleted the active conversation, clear it
       if (activeConversationId === conversationId) {
-        setActiveConversationId(null);
+        setActiveConversationId(undefined);
         setMessages([]);
       }
     } catch (error) {
