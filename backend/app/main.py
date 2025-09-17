@@ -15,7 +15,7 @@ from slowapi.middleware import SlowAPIMiddleware
 import structlog
 import chromadb
 import weaviate
-from pinecone import Pinecone
+import pinecone
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -79,7 +79,8 @@ async def lifespan(app: FastAPI):
     pinecone_api_key = os.getenv("PINECONE_API_KEY")
     if pinecone_api_key:
         try:
-            pinecone_client = Pinecone(api_key=pinecone_api_key)
+            pinecone.init(api_key=pinecone_api_key)
+            pinecone_client = pinecone
             print("✓ Pinecone initialized")
         except Exception as e:
             print(f"✗ Pinecone initialization failed: {e}")
