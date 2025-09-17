@@ -95,6 +95,7 @@ async def lifespan(app: FastAPI):
 
 # Rate limiting
 
+limiter = Limiter(key_func=get_remote_address)
 # Create FastAPI app
 app = FastAPI(
     title="AI Chat MCP Studio API",
