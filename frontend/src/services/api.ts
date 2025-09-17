@@ -101,7 +101,7 @@ class ApiService {
   }
 
   async deleteAPIKey(apiKeyId: number): Promise<void> {
-    await this.axiosInstance.delete(`/users/api-keys/${apiKeyId}`);
+    await this.axiosInstance.delete(`/api/users/api-keys/${apiKeyId}`);
   }
 
   // Conversations
@@ -114,7 +114,7 @@ class ApiService {
 
   async getConversation(conversationId: number): Promise<types.Conversation> {
     const response = await this.axiosInstance.get<types.Conversation>(
-      `/chat/conversations/${conversationId}`
+      `/api/chat/conversations/${conversationId}`
     );
     return response.data;
   }
@@ -124,14 +124,14 @@ class ApiService {
     updates: { title?: string }
   ): Promise<types.Conversation> {
     const response = await this.axiosInstance.put<types.Conversation>(
-      `/chat/conversations/${conversationId}`,
+      `/api/chat/conversations/${conversationId}`,
       updates
     );
     return response.data;
   }
 
   async deleteConversation(conversationId: number): Promise<void> {
-    await this.axiosInstance.delete(`/chat/conversations/${conversationId}`);
+    await this.axiosInstance.delete(`/api/chat/conversations/${conversationId}`);
   }
 
   async getConversationMessages(
@@ -140,7 +140,7 @@ class ApiService {
     limit: number = 1000
   ): Promise<types.Message[]> {
     const response = await this.axiosInstance.get<types.Message[]>(
-      `/chat/conversations/${conversationId}/messages`,
+      `/api/chat/conversations/${conversationId}/messages`,
       { params: { skip, limit } }
     );
     return response.data;
