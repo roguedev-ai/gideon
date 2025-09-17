@@ -1,1 +1,1 @@
-# Chat module placeholder
+from .router import router

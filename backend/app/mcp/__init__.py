@@ -1,1 +1,1 @@
-# MCP module placeholder
+from .router import router
