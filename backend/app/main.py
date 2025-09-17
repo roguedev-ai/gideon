@@ -94,10 +94,6 @@ async def lifespan(app: FastAPI):
     print("Shutting down AI Chat MCP Studio...")
 
 # Rate limiting
-limiter = Limiter(key_func=get_remote_address)
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-app.add_middleware(SlowAPIMiddleware)
 
 # Create FastAPI app
 app = FastAPI(
@@ -124,6 +120,11 @@ app.add_middleware(
     ],
     max_age=86400,  # 24 hours
 )
+
+# Rate limiter setup (moved here after app creation)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 # Global exception handler
 @app.exception_handler(Exception)
