@@ -3,8 +3,8 @@ import * as types from '../types/api';
 
 // API Base URL - defaults to backend proxy
 // API Base URL - fixed for production with /api prefix
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.REACT_APP_API_URL || "";
+const API_URL = process.env.REACT_APP_API_URL || "";
 
 class ApiService {
   private axiosInstance: AxiosInstance;
