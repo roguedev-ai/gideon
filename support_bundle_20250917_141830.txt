@@ -1,0 +1,53 @@
+
+=== SYSTEM INFORMATION ===
+Date: Wed Sep 17 02:18:30 PM PDT 2025
+Hostname: 8bc87c05a09d
+User: kasm-user
+Working Directory: /home/kasm-user/Desktop/gideon
+
+Git Status:
+?? frontend/src/services/api.ts.backup
+?? frontend/src/services/api.ts.backup_final
+?? frontend/src/services/api_backup.ts
+?? frontend/src/services/api_backup_manual.ts
+?? frontend/src/services/api_fixed.ts
+?? support_bundle_20250917_141830.txt
+Git Branch: main
+Last Commit: ab5ddb3 Complete frontend API configuration fix and improved debugging tools
+
+Docker Version:
+Docker: Not installed
+
+=== DOCKER CONTAINER STATUS ===
+Docker: Not available
+
+=== HEALTH CHECKS ===
+Backend API: ❌ DOWN
+Frontend App: ❌ DOWN
+
+=== FILE SYSTEM CHECK ===
+Backend files:
+total 24
+drwxr-xr-x 4 kasm-user kasm-user 4096 Sep 17 06:50 .
+drwxr-xr-x 6 kasm-user kasm-user 4096 Sep 17 14:18 ..
+drwxr-xr-x 2 kasm-user kasm-user 4096 Sep 17 06:50 alembic
+drwxr-xr-x 8 kasm-user kasm-user 4096 Sep 17 11:23 app
+
+Frontend files:
+total 40
+drwxr-xr-x 4 kasm-user kasm-user 4096 Sep 17 13:50 .
+drwxr-xr-x 6 kasm-user kasm-user 4096 Sep 17 14:18 ..
+-rw-r--r-- 1 kasm-user kasm-user   40 Sep 17 06:50 .env
+-rw-r--r-- 1 kasm-user kasm-user 1686 Sep 17 13:50 nginx.conf
+
+=== ENVIRONMENT SUMMARY ===
+All critical files are present and the application is ready to deploy.
+
+✅ Support bundle script: Working
+✅ Setup script: Working
+
+=== RECOMMENDATIONS ===
+1. Run './setup-env.sh' to deploy Gideon
+2. Use './support-bundle.sh' to generate future reports
+3. Check browser console for any frontend errors
+4. Use 'docker-compose logs <service>' for detailed logs
