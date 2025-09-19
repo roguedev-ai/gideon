@@ -1,0 +1,26 @@
+# STATIC HTML FRONTEND - BYPASSES ALL NODE.JS ISSUES
+FROM nginx:alpine
+
+# Copy the working static HTML file
+COPY frontend/static/index.html /usr/share/nginx/html/index.html
+
+# Configure nginx for API proxy
+RUN echo $'server {\
+    listen 80;\
+    root /usr/share/nginx/html;\
+    index index.html;\
+    \
+    location /api/ {\
+        proxy_pass http://backend:8000/;\
+        proxy_set_header Host $host;\
+        proxy_set_header X-Real-IP $remote_addr;\
+        proxy_set_header X-Forwarded-For $proxy_add_forwarded_forward;\
+        proxy_set_header X-Forwarded-Proto $scheme;\
+    }\
+    \
+    location / {\
+        try_files $uri $uri/ /index.html;\
+    }\
+}' > /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
